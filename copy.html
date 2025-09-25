@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Từ Monolith đến Microservices - Tổng hợp kiến thức</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: #ffffff;
+            color: #f8fafc;
+            background-size: cover;
+            color: #1e293b; /* slate-800 để dễ đọc trên nền sáng */
+        }
+
+        .blob-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+        }
+
+        .blob-1 {
+            width: 400px;
+            height: 400px;
+            top: -100px;
+            left: -100px;
+            background: rgba(56, 189, 248, 0.4); /* sky-400 */
+            animation: move-blob1 20s infinite alternate;
+        }
+
+        .blob-2 {
+            width: 500px;
+            height: 500px;
+            bottom: -150px;
+            right: -150px;
+            background: rgba(244, 114, 182, 0.4); /* pink-400 */
+            animation: move-blob2 25s infinite alternate;
+        }
+
+        @keyframes move-blob1 {
+            from { transform: translate(0, 0) rotate(0deg) scale(1); }
+            to { transform: translate(150px, 100px) rotate(90deg) scale(1.2); }
+        }
+
+        @keyframes move-blob2 {
+            from { transform: translate(0, 0) rotate(0deg) scale(1); }
+            to { transform: translate(-100px, -50px) rotate(-90deg) scale(0.9); }
+        }
+
+        /* Glass effect */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(148, 163, 184, 0.3); /* slate-400 */
+            border-radius: 1rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            color: #0f172a; /* slate-900 */
+        }
+
+        .example-block {
+            background-color: rgba(241, 245, 249, 0.8); /* slate-100 */
+            border-left: 4px solid #38bdf8; /* sky-400 */
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            color: #0f172a;
+        }
+
+        .example-block h4 {
+            color: #0369a1; /* sky-800 */
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .example-block code {
+            background-color: #e2e8f0; /* slate-200 */
+            color: #0f172a; /* slate-900 */
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.9em;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.875rem;
+            line-height: 2.25rem;
+            font-weight: 700;
+            color: #0f172a; /* slate-900 */
+            margin-bottom: 1.5rem;
+        }
+
+        h1, h2, h3, h4, h5 {
+            color: #0f172a; /* Đậm dễ đọc */
+        }
+
+        p, li, span {
+            color: #0b0e13; /* slate-700 */
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="blob-container">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <!-- Header -->
+        <header class="text-center mb-16">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-black tracking-tight mb-4">
+                Hành trình từ <span class="text-sky-400">Monolith</span> đến <span class="text-emerald-400">Microservices</span>
+            </h1>
+            <p class="text-lg md:text-xl text-slate-800 max-w-3xl mx-auto">
+                Khám phá sự chuyển dịch kiến trúc phần mềm, cân bằng các yếu tố để xây dựng hệ thống linh hoạt và bền vững.
+            </p>
+        </header>
+
+        <main class="space-y-20">
+
+            <!-- Section 1: Bối cảnh -->
+            <section id="context">
+                <h2 class="section-title">
+                    <i data-lucide="compass"></i>
+                    Bối Cảnh Vấn Đề
+                </h2>
+                <p class="mb-4">
+                    Hãy tưởng tượng bạn đang phát triển một ứng dụng doanh nghiệp phức tạp, cần triển khai các thay đổi nhanh chóng và đáng tin cậy. Ứng dụng này bao gồm nhiều mảng chức năng nghiệp vụ khác nhau, mỗi mảng là một <strong>subdomain</strong> (miền con) triển khai một phần chức năng cốt lõi.
+                </p>
+
+                <div class="example-block">
+                    <h4><i data-lucide="shopping-cart" class="mr-3 h-6 w-6"></i>Ví dụ xuyên suốt: Hệ thống E-Commerce</h4>
+                    <p class="mt-3 mb-4">Trong hệ thống E-Commerce, chúng ta có các hành vi (system operations) để thực hiện logic nghiệp vụ cụ thể. Mỗi hành vi này sẽ thao tác trên các thực thể nghiệp vụ (business entities).</p>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h5 class="font-semibold text-slate-900">Hành vi hệ thống:</h5>
+                            <ul class="list-disc list-inside mt-2 space-y-1">
+                                <li><code>CreateProduct()</code></li>
+                                <li><code>CreateCustomer()</code></li>
+                                <li><code>CreateOrder()</code></li>
+                                <li><code>PayForOrder()</code></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 class="font-semibold text-slate-900">Thực thể nghiệp vụ:</h5>
+                            <ul class="list-disc list-inside mt-2 space-y-1">
+                                <li><code>Product</code>, <code>Category</code></li>
+                                <li><code>Customer</code></li>
+                                <li><code>Order</code>, <code>Inventory</code></li>
+                                <li><code>PaymentTransaction</code></li>
+                            </ul>
+                        </div>
+                    </div>
+                     <p class="mt-4">
+                        Các mảng nghiệp vụ (subdomains) tương ứng trong hệ thống E-Commerce sẽ là: <code>ProductManagement</code>, <code>OrderManagement</code>, <code>PaymentManagement</code>, <code>InventoryManagement</code>, và <code>CustomerManagement</code>.
+                    </p>
+                </div>
+            </section>
+            
+            <!-- Section 2: Monolith -->
+            <section id="monolith">
+                <h2 class="section-title">
+                    <i data-lucide="package"></i>
+                    Kiến Trúc Nguyên Khối (Monolith)
+                </h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div class="space-y-4">
+                        <p>
+                           Một cách tiếp cận truyền thống là xây dựng toàn bộ ứng dụng thành một khối kiến trúc nguyên khối (monolithic). Tất cả các subdomain được đóng gói và triển khai như một đơn vị duy nhất, không thể tách rời.
+                        </p>
+                        <p class="text-sky-300 font-medium">
+                            Đây là lựa chọn hợp lý và hiệu quả ở giai đoạn đầu của dự án, khi mục tiêu là ra mắt sản phẩm nhanh chóng để kiểm chứng thị trường.
+                        </p>
+                    </div>
+                    <div class="glass-card p-6">
+                        <h3 class="font-bold  text-lg mb-3 flex items-center"><i data-lucide="box" class="mr-2"></i>Đặc điểm chính</h3>
+                        <ul class="space-y-3 text-slate-900">
+                            <li class="flex items-start"><i data-lucide="file-code-2" class="w-5 h-5 mr-3 mt-1 text-sky-400 shrink-0"></i> <span><strong>Một codebase duy nhất:</strong> Toàn bộ mã nguồn nằm trong cùng một dự án.</span></li>
+                            <li class="flex items-start"><i data-lucide="container" class="w-5 h-5 mr-3 mt-1 text-sky-400 shrink-0"></i> <span><strong>Một đơn vị triển khai:</strong> Đóng gói thành một tệp thực thi duy nhất ( .jar, .war, container).</span></li>
+                            <li class="flex items-start"><i data-lucide="database" class="w-5 h-5 mr-3 mt-1 text-sky-400 shrink-0"></i> <span><strong>Một cơ sở dữ liệu chung:</strong> Tất cả module cùng chia sẻ và truy cập vào một database.</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Problems -->
+            <section id="problems">
+                 <h2 class="section-title text-red-400">
+                    <i data-lucide="alert-triangle"></i>
+                    Vấn Đề Của Monolith Khi "Trưởng Thành"
+                </h2>
+                <p>Khi dự án thành công, lượng người dùng tăng và yêu cầu tính năng mới ngày càng nhiều, những ưu điểm ban đầu của Monolith dần biến thành "gánh nặng", cản trở sự phát triển.</p>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+                    <!-- Card 1 -->
+                    <div class="glass-card p-6">
+                        <i data-lucide="puzzle" class="w-10 h-10 text-red-400 mb-4"></i>
+                        <h3 class="font-bold  text-lg mb-2">Phức tạp & Khó bảo trì</h3>
+                        <p class="text-sm">Codebase khổng lồ, các module phụ thuộc chồng chéo (tightly coupled) khiến thay đổi nhỏ có thể gây lỗi không lường trước.</p>
+                    </div>
+                     <!-- Card 2 -->
+                    <div class="glass-card p-6">
+                        <i data-lucide="ship" class="w-10 h-10 text-red-400 mb-4"></i>
+                        <h3 class="font-bold  text-lg mb-2">Triển khai chậm & Rủi ro</h3>
+                        <p class="text-sm">Mọi thay đổi nhỏ đều đòi hỏi build và triển khai lại toàn bộ. Một lỗi nhỏ có thể làm sập cả hệ thống.</p>
+                    </div>
+                     <!-- Card 3 -->
+                    <div class="glass-card p-6">
+                        <i data-lucide="scaling" class="w-10 h-10 text-red-400 mb-4"></i>
+                        <h3 class="font-bold  text-lg mb-2">Khó khăn mở rộng</h3>
+                        <p class="text-sm">Phải nhân bản toàn bộ ứng dụng để mở rộng một chức năng, gây lãng phí tài nguyên.</p>
+                    </div>
+                     <!-- Card 4 -->
+                    <div class="glass-card p-6">
+                        <i data-lucide="lock" class="w-10 h-10 text-red-400 mb-4"></i>
+                        <h3 class="font-bold  text-lg mb-2">Rào cản công nghệ</h3>
+                        <p class="text-sm">Bị "khóa" vào một technology stack duy nhất. Khó áp dụng công nghệ mới hoặc nâng cấp.</p>
+                    </div>
+                     <!-- Card 5 -->
+                    <div class="glass-card p-6">
+                        <i data-lucide="users" class="w-10 h-10 text-red-400 mb-4"></i>
+                        <h3 class="font-bold  text-lg mb-2">Tác động tổ chức</h3>
+                        <p class="text-sm">Nhiều đội ngũ "dẫm chân" lên nhau trên một codebase, merge conflicts xảy ra thường xuyên.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section 4: Solution -->
+            <section id="solution">
+                <h2 class="section-title text-yellow-400">
+                    <i data-lucide="lightbulb"></i>
+                    Giải Pháp: Phân Rã Hệ Thống
+                </h2>
+                <p class="mb-8 max-w-4xl">
+                    Giải pháp là phân rã ứng dụng thành các dịch vụ nhỏ, độc lập. Tuy nhiên, việc thiết kế ranh giới dịch vụ (service boundaries) là một thách thức, đòi hỏi phải cân bằng giữa hai nhóm lực đối lập: "Năng lượng tối" (lực đẩy, thúc đẩy việc tách nhỏ) và "Vật chất tối" (lực hút, khuyến khích giữ lại).
+                </p>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Dark Energy -->
+                    <div class="glass-card p-6 border-t-4 border-green-400">
+                        <h3 class="font-bold text-xl text-green-400 mb-4 flex items-center"><i data-lucide="arrow-up-right-square" class="mr-2"></i>Dark Energy (Lực Đẩy - Tách Nhỏ)</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start"><i data-lucide="check-circle" class="w-5 h-5 mr-3 mt-1 text-green-400 shrink-0"></i><span><strong>Thành phần đơn giản:</strong> Dễ hiểu, dễ bảo trì và mở rộng.</span></li>
+                            <li class="flex items-start"><i data-lucide="check-circle" class="w-5 h-5 mr-3 mt-1 text-green-400 shrink-0"></i><span><strong>Độc lập cho đội phát triển:</strong> Mỗi đội có thể phát triển, kiểm thử, triển khai độc lập.</span></li>
+                            <li class="flex items-start"><i data-lucide="check-circle" class="w-5 h-5 mr-3 mt-1 text-green-400 shrink-0"></i><span><strong>Đa dạng công nghệ:</strong> Sử dụng công nghệ phù hợp nhất cho từng subdomain.</span></li>
+                            <li class="flex items-start"><i data-lucide="check-circle" class="w-5 h-5 mr-3 mt-1 text-green-400 shrink-0"></i><span><strong>Tách theo đặc tính:</strong> Tách phần cần scale mạnh hoặc bảo mật cao ra riêng.</span></li>
+                        </ul>
+                    </div>
+
+                    <!-- Dark Matter -->
+                    <div class="glass-card p-6 border-t-4 border-orange-400">
+                        <h3 class="font-bold text-xl text-orange-400 mb-4 flex items-center"><i data-lucide="magnet" class="mr-2"></i>Dark Matter (Lực Hút - Giữ Lại)</h3>
+                         <ul class="space-y-3">
+                            <li class="flex items-start"><i data-lucide="check-circle" class="w-5 h-5 mr-3 mt-1 text-orange-400 shrink-0"></i><span><strong>Tương tác đơn giản & hiệu quả:</strong> Tránh gọi qua mạng nhiều lần gây độ trễ.</span></li>
+                            <li class="flex items-start"><i data-lucide="check-circle" class="w-5 h-5 mr-3 mt-1 text-orange-400 shrink-0"></i><span><strong>Ưu tiên tính nhất quán ACID:</strong> Giao dịch trong 1 service dễ đảm bảo toàn vẹn hơn.</span></li>
+                            <li class="flex items-start"><i data-lucide="check-circle" class="w-5 h-5 mr-3 mt-1 text-orange-400 shrink-0"></i><span><strong>Giảm phụ thuộc (runtime & design-time):</strong> Tránh lỗi dây chuyền và thay đổi đồng loạt nhiều service.</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section 5: Microservices -->
+            <section id="microservices">
+                 <h2 class="section-title text-emerald-400">
+                    <i data-lucide="blocks"></i>
+                    Mẫu Kiến Trúc Microservices
+                </h2>
+                <p>Microservices pattern cấu trúc ứng dụng thành một tập hợp các dịch vụ nhỏ, độc lập, được tổ chức xoay quanh các năng lực nghiệp vụ (business capability).</p>
+                <div class="mt-8 grid md:grid-cols-2 gap-8">
+                    <div class="glass-card p-6 space-y-4">
+                         <h4 class="font-bold  text-lg flex items-center"><i data-lucide="rocket" class="mr-2"></i>Triển khai độc lập</h4>
+                         <p>Mỗi service đủ nhỏ và tập trung để một đội có thể tự quản lý, phát triển và triển khai một cách tự chủ.</p>
+                    </div>
+                     <div class="glass-card p-6 space-y-4">
+                         <h4 class="font-bold  text-lg flex items-center"><i data-lucide="unlink" class="mr-2"></i>Liên kết lỏng lẻo</h4>
+                         <p>Các service tương tác qua lại thông qua API rõ ràng (HTTP/REST, gRPC, message broker), không gọi trực tiếp nội bộ.</p>
+                    </div>
+                </div>
+                <p class="mt-6">Mỗi service thường có cơ sở dữ liệu riêng (<strong>database per service pattern</strong>) để đảm bảo sự độc lập hoàn toàn. Việc phân rã thường theo các subdomain của DDD, áp dụng nguyên tắc Single Responsibility Principle (SRP) ở cấp độ dịch vụ.</p>
+                
+                <div class="example-block">
+                    <h4><i data-lucide="shopping-cart" class="mr-3 h-6 w-6"></i>Ví dụ: E-Commerce với Microservices</h4>
+                    <p class="mt-3 mb-4">Thay vì một khối lớn, ta tách thành các service nhỏ, mỗi service phụ trách một subdomain:</p>
+                     <div class="flex flex-wrap gap-3 mb-4">
+                        <span class="bg-sky-900 text-sky-300 px-3 py-1 rounded-full text-sm">ProductService</span>
+                        <span class="bg-sky-900 text-sky-300 px-3 py-1 rounded-full text-sm">OrderService</span>
+                        <span class="bg-sky-900 text-sky-300 px-3 py-1 rounded-full text-sm">PaymentService</span>
+                        <span class="bg-sky-900 text-sky-300 px-3 py-1 rounded-full text-sm">InventoryService</span>
+                        <span class="bg-sky-900 text-sky-300 px-3 py-1 rounded-full text-sm">CustomerService</span>
+                    </div>
+                    <p><strong>Luồng thanh toán đơn hàng (<code>PayForOrder</code>):</strong></p>
+                    <ol class="list-decimal list-inside mt-2 space-y-2">
+                        <li>Request đến <code>PaymentService</code>.</li>
+                        <li><code>PaymentService</code> gọi API đến <code>OrderService</code> để lấy thông tin đơn hàng.</li>
+                        <li><code>PaymentService</code> gửi event/gọi API đến <code>InventoryService</code> để cập nhật tồn kho.</li>
+                        <li><code>PaymentService</code> xử lý logic thanh toán.</li>
+                        <li><code>PaymentService</code> publish event sang <code>OrderService</code> để cập nhật trạng thái đơn hàng.</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- Section 6: Result -->
+            <section id="result">
+                <h2 class="section-title">
+                    <i data-lucide="git-commit-vertical"></i>
+                    Kết Quả: Lợi Ích và Hạn Chế
+                </h2>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Benefits -->
+                    <div class="space-y-4">
+                         <h3 class="text-2xl font-bold text-green-400 flex items-center gap-3"><i data-lucide="thumbs-up"></i>Lợi Ích</h3>
+                         <ul class="space-y-3">
+                            <li class="flex items-start"><i data-lucide="check" class="w-5 h-5 mr-3 mt-1 text-green-400 shrink-0"></i><span><strong>Triển khai độc lập & nhanh chóng:</strong> Các đội tự chủ, CI/CD được đẩy nhanh.</span></li>
+                            <li class="flex items-start"><i data-lucide="check" class="w-5 h-5 mr-3 mt-1 text-green-400 shrink-0"></i><span><strong>Dịch vụ đơn giản, dễ hiểu:</strong> Codebase nhỏ gọn, dễ bảo trì.</span></li>
+                            <li class="flex items-start"><i data-lucide="check" class="w-5 h-5 mr-3 mt-1 text-green-400 shrink-0"></i><span><strong>Mở rộng linh hoạt:</strong> Scale riêng từng dịch vụ theo nhu cầu tải.</span></li>
+                             <li class="flex items-start"><i data-lucide="check" class="w-5 h-5 mr-3 mt-1 text-green-400 shrink-0"></i><span><strong>Đa dạng công nghệ:</strong> Dùng công nghệ phù hợp nhất cho từng bài toán.</span></li>
+                             <li class="flex items-start"><i data-lucide="check" class="w-5 h-5 mr-3 mt-1 text-green-400 shrink-0"></i><span><strong>Tăng khả năng chịu lỗi:</strong> Lỗi ở một service ít khả năng làm sập cả hệ thống.</span></li>
+                         </ul>
+                    </div>
+
+                     <!-- Drawbacks -->
+                    <div class="space-y-4">
+                         <h3 class="text-2xl font-bold text-red-400 flex items-center gap-3"><i data-lucide="thumbs-down"></i>Hạn Chế</h3>
+                          <ul class="space-y-3">
+                            <li class="flex items-start"><i data-lucide="x" class="w-5 h-5 mr-3 mt-1 text-red-400 shrink-0"></i><span><strong>Phức tạp trong tương tác phân tán:</strong> Khó debug luồng xử lý qua nhiều service.</span></li>
+                            <li class="flex items-start"><i data-lucide="x" class="w-5 h-5 mr-3 mt-1 text-red-400 shrink-0"></i><span><strong>Nhất quán phân tán khó khăn:</strong> Phải chấp nhận eventual consistency (mô hình BASE).</span></li>
+                            <li class="flex items-start"><i data-lucide="x" class="w-5 h-5 mr-3 mt-1 text-red-400 shrink-0"></i><span><strong>Phụ thuộc lúc chạy & thiết kế:</strong> Lỗi dây chuyền, thay đổi phải sửa nhiều service nếu thiết kế sai.</span></li>
+                            <li class="flex items-start"><i data-lucide="x" class="w-5 h-5 mr-3 mt-1 text-red-400 shrink-0"></i><span><strong>Tăng chi phí vận hành:</strong> Yêu cầu trình độ DevOps cao để quản lý, giám sát.</span></li>
+                         </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Conclusion -->
+            <section id="conclusion" class="text-center glass-card p-8 mt-20">
+                <h2 class="text-3xl font-bold  mb-4">Tổng Kết</h2>
+                 <p class="text-slate-900 max-w-3xl mx-auto">
+                     Việc coi Monolith là "lỗi thời" và Microservices là "hiện đại" là một quan điểm chưa toàn diện. Sự lựa chọn kiến trúc luôn phụ thuộc vào bối cảnh cụ thể của dự án, quy mô đội ngũ và mục tiêu kinh doanh. Microservices mang lại nhiều lợi ích nhưng cũng đi kèm với sự phức tạp đáng kể. Hãy cân nhắc kỹ lưỡng trước khi áp dụng.
+                 </p>
+            </section>
+        </main>
+        
+        <footer class="text-center mt-20 border-t border-slate-800 pt-8">
+            <p class="text-slate-500">Trang web được tạo tự động dựa trên tài liệu được cung cấp.</p>
+        </footer>
+
+    </div>
+    
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
